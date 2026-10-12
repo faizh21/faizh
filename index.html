@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050b1d">
+  <meta name="description" content="AstroWorld — jelajahi tata surya dalam pengalaman interaktif.">
+  <title>AstroWorld — Jelajahi Tata Surya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="starfield" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="AstroWorld beranda"><span class="brand-mark">✦</span> Astro<span>World</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Buka navigasi">☰</button>
+    <nav id="navLinks">
+      <a href="#home" class="active">Beranda</a>
+      <a href="#planets">Planet</a>
+      <a href="#solar">Tata Surya</a>
+      <a href="#compare">Perbandingan</a>
+      <a href="#quiz">Kuis</a>
+    </nav>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Ganti tema" title="Ganti tema">◐</button>
+      <button class="icon-btn" id="soundToggle" aria-label="Efek suara" title="Efek suara">♫</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse"></span> PENGALAMAN ASTRONOMI INTERAKTIF</div>
+        <h1>Jelajahi<br><span>Tata Surya.</span></h1>
+        <p>Temukan keajaiban delapan planet, orbit, dan misteri luar angkasa dalam satu pengalaman interaktif.</p>
+        <div class="hero-buttons">
+          <a class="btn primary" href="#solar">Mulai Eksplorasi <span>↗</span></a>
+          <a class="btn ghost" href="#planets"><span class="play">▶</span> Kenali Planet</a>
+        </div>
+        <div class="hero-stats">
+          <div><strong>08</strong><small>Planet utama</small></div>
+          <div><strong>4.6B</strong><small>Tahun usia tata surya</small></div>
+          <div><strong>∞</strong><small>Hal untuk dijelajahi</small></div>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Ilustrasi tata surya">
+        <div class="sun-glow"></div>
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+        <div class="planet planet-earth" title="Bumi"><span></span></div>
+        <div class="planet planet-mars" title="Mars"></div>
+        <div class="planet planet-jupiter" title="Jupiter"></div>
+        <div class="planet planet-saturn" title="Saturnus"></div>
+        <div class="planet planet-neptune" title="Neptunus"></div>
+        <div class="tiny-stars">✦　·　✧　·　✦　·　✧</div>
+        <div class="art-label"><span class="label-dot"></span> SISTEM BINTANG SOL</div>
+      </div>
+    </section>
+
+    <section class="section section-heading" id="planets">
+      <div><div class="eyebrow">PILIH TUJUANMU</div><h2>Kenali para <span>planet.</span></h2><p class="muted">Pilih planet untuk membuka ringkasan dan fakta menarik.</p></div>
+      <div class="search-wrap"><span>⌕</span><input id="planetSearch" type="search" placeholder="Cari planet..." aria-label="Cari planet"></div>
+    </section>
+    <section class="planet-grid" id="planetGrid" aria-live="polite"></section>
+
+    <section class="section solar-section" id="solar">
+      <div class="section-heading">
+        <div><div class="eyebrow">LABORATORIUM KOSMIK</div><h2>Tata surya <span>interaktif.</span></h2><p class="muted">Pilih planet, ubah kecepatan orbit, dan jelajahi susunannya.</p></div>
+        <div class="view-switch"><button class="selected" data-view="3D">Orbit</button><button data-view="2D">Ringkas</button></div>
+      </div>
+      <div class="solar-panel">
+        <div class="solar-stage" id="solarStage">
+          <div class="solar-sun"></div>
+          <div class="solar-orbit o1"><i class="orbiting mercury"></i></div>
+          <div class="solar-orbit o2"><i class="orbiting venus"></i></div>
+          <div class="solar-orbit o3"><i class="orbiting earth"></i></div>
+          <div class="solar-orbit o4"><i class="orbiting mars"></i></div>
+          <div class="solar-orbit o5"><i class="orbiting jupiter"></i></div>
+          <div class="solar-orbit o6"><i class="orbiting saturn"></i></div>
+          <div class="solar-orbit o7"><i class="orbiting uranus"></i></div>
+          <div class="solar-orbit o8"><i class="orbiting neptune"></i></div>
+          <div class="stage-caption"><span class="label-dot"></span> SIMULASI VISUAL · BUKAN SKALA JARAK SEBENARNYA</div>
+        </div>
+        <aside class="solar-controls">
+          <div class="control-top"><span class="eyebrow">KONTROL SIMULASI</span><button id="orbitToggle" class="tiny-toggle on">Orbit ON</button></div>
+          <label class="control-row"><span>Kecepatan animasi</span><strong id="speedLabel">1.0×</strong></label>
+          <input id="speedRange" type="range" min="0" max="3" step=".5" value="1">
+          <label class="control-row"><span>Nama planet</span><input type="checkbox" id="labelsToggle" checked></label>
+          <label class="control-row"><span>Garis orbit</span><input type="checkbox" id="linesToggle" checked></label>
+          <div class="control-note"><strong id="selectedPlanetName">Bumi</strong><p id="selectedPlanetDesc">Planet tempat kita tinggal, dengan air cair di permukaannya.</p></div>
+          <button class="btn primary full" id="randomPlanet">Temukan Planet Acak ↗</button>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section compare-section" id="compare">
+      <div class="section-heading">
+        <div><div class="eyebrow">LIHAT PERBEDAANNYA</div><h2>Planet dalam <span>perspektif.</span></h2><p class="muted">Bandingkan diameter, suhu rata-rata, atau lama satu tahun.</p></div>
+        <select id="compareMetric" aria-label="Metrik perbandingan"><option value="diameter">Diameter</option><option value="temp">Suhu rata-rata</option><option value="year">Lama revolusi</option></select>
+      </div>
+      <div class="compare-panel" id="comparePanel"></div>
+      <p class="source-note">Angka merupakan ringkasan edukasi dan dapat berbeda menurut sumber atau metode pengukuran. Jarak dan ukuran pada simulasi tidak digambarkan dengan skala astronomis sebenarnya.</p>
+    </section>
+
+    <section class="section quiz-section" id="quiz">
+      <div class="quiz-intro"><div class="eyebrow">UJI PENGETAHUANMU</div><h2>Seberapa jauh kamu<br><span>mengenal semesta?</span></h2><p class="muted">Jawab pertanyaan, kumpulkan skor, dan tingkatkan pengetahuanmu.</p><div class="quiz-badge">✦ SPACE QUIZ</div></div>
+      <div class="quiz-card" id="quizCard">
+        <div class="quiz-top"><span id="quizProgress">PERTANYAAN 1 / 5</span><span class="score-pill">Skor <strong id="quizScore">0</strong></span></div>
+        <div class="progress"><span id="progressBar"></span></div>
+        <h3 id="questionText">Planet terbesar di tata surya kita adalah...</h3>
+        <div class="answers" id="answers"></div>
+        <div id="quizFeedback" class="quiz-feedback" aria-live="polite"></div>
+        <button class="btn primary full" id="nextQuestion" disabled>Jawaban berikutnya →</button>
+      </div>
+    </section>
+
+    <section class="section final-cta">
+      <div class="cta-orb">✦</div><div><div class="eyebrow">SEMESTA MENUNGGU</div><h2>Terus penasaran.<br><span>Terus menjelajah.</span></h2><p class="muted">Setiap planet menyimpan cerita yang belum selesai kita pelajari.</p></div><a class="btn primary" href="#home">Kembali ke atas ↑</a>
+    </section>
+  </main>
+
+  <footer><a class="brand" href="#home"><span class="brand-mark">✦</span> Astro<span>World</span></a><p>Eksplorasi kecil untuk rasa ingin tahu yang besar.</p><span>© 2026 AstroWorld · Proyek edukasi</span></footer>
+
+  <dialog id="planetDialog" class="planet-dialog">
+    <button class="dialog-close" id="closeDialog" aria-label="Tutup">✕</button>
+    <div id="dialogPlanetVisual" class="dialog-visual"></div>
+    <div class="dialog-content"><div class="eyebrow">PROFIL PLANET</div><h2 id="dialogName">Bumi</h2><p id="dialogSummary"></p><div class="dialog-stats" id="dialogStats"></div><h3>Fakta menarik</h3><ul id="dialogFacts"></ul></div>
+  </dialog>
+  <script src="script.js"></script>
+</body>
+</html>
