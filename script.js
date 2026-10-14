@@ -31,7 +31,100 @@ $("#planetSearch").addEventListener("input",e=>renderPlanets(e.target.value));
 $("#menuToggle").addEventListener("click",()=>$("#navLinks").classList.toggle("open"));
 $("#navLinks").querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>$("#navLinks").classList.remove("open")));
 $("#themeToggle").addEventListener("click",()=>document.body.classList.toggle("light"));
-let soundOn=false;$("#soundToggle").addEventListener("click",()=>{soundOn=!soundOn;$("#soundToggle").style.color=soundOn?"#58c9ff":"";$("#soundToggle").title=soundOn?"Efek suara aktif (visual demo)":"Efek suara nonaktif";});
+
+// Musik ambient luar angkasa sederhana dibuat langsung dengan Web Audio API.
+// Audio baru dimulai setelah tombol musik diklik, sesuai kebijakan autoplay browser.
+let soundOn = false;
+let audioContext = null;
+let musicTimer = null;
+let musicStep = 0;
+let masterGain = null;
+const musicNotes = [
+  [261.63, 329.63, 392.00], [293.66, 349.23, 440.00],
+  [220.00, 293.66, 369.99], [246.94, 329.63, 392.00],
+  [261.63, 329.63, 440.00], [196.00, 293.66, 392.00],
+  [220.00, 277.18, 369.99], [246.94, 311.13, 392.00]
+];
+function playAmbientChord() {
+  if (!audioContext || !masterGain || !soundOn) return;
+  const chord = musicNotes[musicStep % musicNotes.length];
+  const now = audioContext.currentTime;
+  chord.forEach((frequency, index) => {
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    oscillator.type = index === 0 ? "sine" : "triangle";
+    oscillator.frequency.setValueAtTime(frequency / (index === 0 ? 2 : 1), now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(index === 0 ? 0.045 : 0.018, now + 0.7);
+    gain.gain.setTargetAtTime(0.0001, now + 2.3, 0.7);
+    oscillator.connect(gain);
+    gain.connect(masterGain);
+    oscillator.start(now);
+    oscillator.stop(now + 5);
+  });
+  // Nada tinggi yang lembut agar terdengar seperti musik ambient.
+  const sparkle = audioContext.createOscillator();
+  const sparkleGain = audioContext.createGain();
+  sparkle.type = "sine";
+  sparkle.frequency.setValueAtTime(chord[2] * 2, now);
+  sparkleGain.gain.setValueAtTime(0.0001, now);
+  sparkleGain.gain.linearRampToValueAtTime(0.012, now + 0.25);
+  sparkleGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+  sparkle.connect(sparkleGain);
+  sparkleGain.connect(masterGain);
+  sparkle.start(now);
+  sparkle.stop(now + 2.3);
+  musicStep++;
+}
+async function startAmbientMusic() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) {
+    $("#soundToggle").title = "Browser ini belum mendukung audio";
+    return;
+  }
+  if (!audioContext) {
+    audioContext = new AudioContextClass();
+    masterGain = audioContext.createGain();
+    masterGain.gain.value = 0.65;
+    masterGain.connect(audioContext.destination);
+  }
+  await audioContext.resume();
+  soundOn = true;
+  playAmbientChord();
+  musicTimer = window.setInterval(playAmbientChord, 2400);
+  $("#soundToggle").style.color = "#58c9ff";
+  $("#soundToggle").setAttribute("aria-pressed", "true");
+  $("#soundToggle").title = "Musik ambient aktif — klik untuk menghentikan";
+}
+function stopAmbientMusic() {
+  soundOn = false;
+  if (musicTimer !== null) {
+    window.clearInterval(musicTimer);
+    musicTimer = null;
+  }
+  if (masterGain && audioContext) {
+    masterGain.gain.setTargetAtTime(0.0001, audioContext.currentTime, 0.12);
+    window.setTimeout(() => {
+      if (!soundOn && masterGain && audioContext) {
+        masterGain.gain.setValueAtTime(0.65, audioContext.currentTime);
+        audioContext.suspend();
+      }
+    }, 500);
+  }
+  $("#soundToggle").style.color = "";
+  $("#soundToggle").setAttribute("aria-pressed", "false");
+  $("#soundToggle").title = "Musik nonaktif — klik untuk memutar";
+}
+$("#soundToggle").setAttribute("aria-pressed", "false");
+$("#soundToggle").title = "Musik nonaktif — klik untuk memutar";
+$("#soundToggle").addEventListener("click", () => {
+  if (soundOn) stopAmbientMusic();
+  else startAmbientMusic().catch(() => {
+    soundOn = false;
+    $("#soundToggle").title = "Audio tidak dapat diputar. Coba klik lagi.";
+  });
+});
+
 $("#orbitToggle").addEventListener("click",()=>{document.body.classList.toggle("no-orbits");const on=!document.body.classList.contains("no-orbits");$("#orbitToggle").textContent=on?"Orbit ON":"Orbit OFF";$("#linesToggle").checked=on});
 $("#linesToggle").addEventListener("change",e=>{document.body.classList.toggle("no-orbits",!e.target.checked);$("#orbitToggle").textContent=e.target.checked?"Orbit ON":"Orbit OFF"});
 $("#labelsToggle").addEventListener("change",e=>document.body.classList.toggle("no-labels",!e.target.checked));
